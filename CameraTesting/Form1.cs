@@ -9,8 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Numerics;
-
-
+using System.Threading;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -36,9 +35,8 @@ namespace CameraTesting
             m_det_captureR = new Detection();
             cameraCalculations = new CameraCalc();
             
-
             //Initialize CameraMatrices calculations and shows results in selected textBox
-            Detection.CameraMatrices(textBox1, textBox2, textBox3);
+            cameraCalculations.CameraMatrices(textBox1, textBox2, textBox3);
         }
 
         private void StartToolStripMenuItem_Click(object sender, EventArgs e)
@@ -58,10 +56,13 @@ namespace CameraTesting
             try
             {
                 m_det_captureL.FindCenter(captureL, pictureBox1, pictureBox4);
+                cameraCalculations.FindLine(m_det_captureC.center01, m_det_captureC.center02, m_det_captureR.center01,
+                    m_det_captureR.center02, m_det_captureL.center01, m_det_captureL.center02, 0.0, textBox4);
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -102,6 +103,8 @@ namespace CameraTesting
             try
             {
                 m_det_captureC.FindCenter(captureC, pictureBox2, pictureBox5);
+
+
             }
             catch (Exception)
             {
@@ -163,11 +166,6 @@ namespace CameraTesting
             }
         }
 
-        private void StartColorMaskToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void Button1_Click(object sender, EventArgs e)
         {
             if (captureL == null)
@@ -195,9 +193,5 @@ namespace CameraTesting
 
         }
 
-        private void Button2_Click(object sender, EventArgs e)
-        {
-            cameraCalculations.DLT(m_det_captureC.center01, m_det_captureC.center02, m_det_captureR.center01, m_det_captureR.center02, m_det_captureL.center01, m_det_captureL.center02, textBox4);
-        }
     }
 }
